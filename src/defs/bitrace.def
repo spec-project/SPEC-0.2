@@ -134,10 +134,10 @@ by
 fun_CS2 Vs H Sub1 Sub2 := fCS2 Vs H Sub2 nil Sub1.
 
 Define project_mesg : nat -> bt_pair -> tm -> prop
-by 
-project_mesg 1 (in M N) M ; 
-project_mesg 1 (out M N) M ; 
-project_mesg 2 (in M N) N ; 
+by
+project_mesg 1 (in M N) M ;
+project_mesg 1 (out M N) M ;
+project_mesg 2 (in M N) N ;
 project_mesg 2 (out M N) N.
 
 Define vars_cst	: list tm -> list tm -> list constraint -> prop
@@ -275,7 +275,7 @@ Define bt_consistent_iter : list bt_pair -> list thy_pair -> list bt_pair -> pro
 by 
 
 bt_consistent_iter Bt_Pre Thy_Pre nil ;
- 
+
 bt_consistent_iter Bt_Pre Thy_Pre (cons (in M N) H) :=
   deduce_r Thy_Pre M N /\
   append Bt_Pre (cons (in M N) nil) NewBt /\ 
@@ -292,6 +292,4 @@ Define bt_consistent : list bt_pair -> prop
 by 
 bt_consistent H := 
   bt_consistent_iter nil nil H.
-
-  
 

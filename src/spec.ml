@@ -244,9 +244,9 @@ let rec process_spi ?(interactive=false) parse lexbuf =
            let _,_,_,_,ty = System.get_def 2 pred in 
            let pred_var = Term.get_var pred in 
              Format.printf "Reading spi definition\n" ;  
-             Spi.add_spi_sig agent n ; 
+             Spi.add_spi_sig agent n ;
      	     (* System.update_def Spi.Process.agent_def b ;  *)
-             System.add_clauses [(pred_var,ty)] [b] 
+             System.add_clauses [(pred_var,ty)] [b]
              (* check_def agent *)
          ) 
          with | Not_found ->  

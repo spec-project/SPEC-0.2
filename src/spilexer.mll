@@ -71,6 +71,8 @@ rule token = parse
 | "pub" { PUB }
 | "sign" { SIGN }
 | "vk" { VK }
+| "mac" { MAC }	(* Sign, Hash, Mac *)
+| "tau" { TAU } (* Add tau *)
 
 | name as n { ID n }
 | aname as n { AID n} 

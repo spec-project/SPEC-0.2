@@ -45,6 +45,13 @@ struct
   let msg_ct = Term.atom "ct"
   let msg_nm = Term.atom "nm"
   let msg_bn = Term.atom "bn"
+  (* Asymmetric Encryption *)
+  let msg_aen = Term.atom "aen"
+  let msg_pub = Term.atom "pub"
+  (* Sign, Hash, Mac *)
+  let msg_sign = Term.atom "sign"
+  let msg_hash = Term.atom "hs"
+  let msg_mac  = Term.atom "mac"
 
   (* let var_option  = Term.get_var option *)
 

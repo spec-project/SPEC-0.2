@@ -27,26 +27,29 @@
 % For simplicity, in this implementation we use only the encryption 
 % constructor and pairing; natural numbers constructors are not implemented.
 % But it is easy to add them.
-%
+
 
 % Message terms
 Kind tm type.
 Kind name type.
 
-Type ct	(string -> tm). % constants
+Type ct		(string -> tm). % constants
 Type var	(name -> tm). % variables 
-Type nm	(name -> tm). % names
-Type bn	(tm -> tm).   % constructor for marking bound names; needed when recursing over binders. 
-Type en	(tm -> tm -> tm). % symmetric encryption
-Type pr	(tm -> tm -> tm). % pairing constructor
+Type nm		(name -> tm). % names
+Type bn		(tm -> tm).   % constructor for marking bound names; needed when recursing over binders. 
+Type en		(tm -> tm -> tm). % symmetric encryption
+Type pr		(tm -> tm -> tm). % pairing constructor
+% Asymmetric Encryption
+Type aen        (tm -> tm -> tm). % asymmetric encryption
+Type pub        (tm -> tm). % public key constructor
+% Sign, Hash, Mac
+Type sign	(tm -> tm -> tm). % signature
+Type hs		(tm -> tm). % hash function
+Type mac 	(tm -> tm -> tm). % mac function
 
 % Currently not used: 
 % Type zz		tm. % zero
 % Type succ	(tm -> tm). % successor
-% Type hs	(tm -> tm). % hash function 
-% Type aen	(tm -> tm -> tm). % asymmetric encryption 
-% Type pub	(tm -> tm). % public key constructor
-% Type sign	(tm -> tm -> tm). % signature
 % Type vk	(tm -> tm). % verification key
 
 % process constructors
@@ -79,7 +82,7 @@ Type act tm -> action.
 
 Define red_proc : proc -> proc -> prop by
    red_proc (match X X P) P ; 
-   red_proc (let (pr M N) P) R := R = (P M N) ; 
+   red_proc (let (pr M N) P) R := R = (P M N) ;
    red_proc (case (en M K) K P) R := R = (P M).
 
 Define appAbs : agent -> agent -> proc -> prop by 

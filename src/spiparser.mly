@@ -45,6 +45,15 @@
   let bang_op = constid (pos 0) "bang" 
   let pr_op = constid (pos 0) "pr"
   let en_op = constid (pos 0) "en"
+  (* Asymmetric Encryption *)
+  let aen_op = constid (pos 0) "aen"
+  let pub_op = constid (pos 0) "pub"
+  (* Sign, Hash, Map *)
+  let sign_op = constid (pos 0) "sign"
+  let hash_op = constid (pos 0) "hs"
+  let mac_op  = constid (pos 0) "mac"
+  (* Add tau *)
+  (* let tau_op = constid (pos 0) "tau" *)
 
   let app s t = Input.pre_app (pos 0) s t 
   let lambda v t = Input.pre_lambda (pos 0) [v] t 
@@ -82,7 +91,7 @@
 %}
 
 %token LPAREN RPAREN LBRAK RBRAK LANGLE RANGLE LBRAC RBRAC SEMICOLON BISIM
-%token ZERO DOT EQ NEQ COMMA NU PAR PLUS ENC HASH AENC PUB SIGN VK
+%token ZERO DOT EQ NEQ COMMA NU PAR PLUS ENC HASH AENC PUB SIGN VK MAC TAU
 %token DEF CASE LET OF IN SHARP BANG
 %token <string> ID
 %token <string> AID
@@ -141,6 +150,7 @@ pexp:
 | lpref IN pexp { let t,(v1,v2) = $1 in app let_op [t; lambda v1 (lambda v2 $3)] }
 | BANG pexp { app bang_op [$2] }
 | apexp { $1 }
+/* | TAU { tau_op } */	/* Add tau */
 
 apexp:
 | LPAREN pexp RPAREN { $2 }
@@ -174,7 +184,8 @@ nupref:
 | NU LPAREN sids RPAREN { $3 }
 
 cpref: 
-| CASE texp OF encpat { ($2,$4) } 
+| CASE texp OF encpat { ($2,$4) }
+/* | CASE texp OF aencpat { ($2. $4) }  */
 
 lpref:
 | LET prpat EQ texp { ($4,$2) }
@@ -193,6 +204,12 @@ name_id:
 encpat:
 | ENC LPAREN ID COMMA texp RPAREN { ((pos 0,$3,Input.Typing.fresh_typaram()),$5) }
 
+/* Asymmetric Encryption - Not in use*/
+/*
+aenpat:
+| AENC LPAREN ID COMMA texp RPAREN { ((pos 0,$3,Input.Typing.fresh_typaram()),$5) }
+*/
+
 prpat:
 | LANGLE ID COMMA ID RANGLE { ((pos 0,$2,Input.Typing.fresh_typaram()), (pos 0,$4,Input.Typing.fresh_typaram()) ) }
 
@@ -200,6 +217,11 @@ texp:
 | name_id { $1 }
 | LANGLE texp COMMA ltexp RANGLE { mkpairs ($2::$4)  }
 | ENC LPAREN texp COMMA texp RPAREN { app en_op [$3;$5] }
+| AENC LPAREN texp COMMA texp RPAREN { app aen_op [$3;$5] } /* Asymmetric Encryption */
+| PUB LPAREN texp RPAREN { app pub_op [$3] } /* Asymmetric Encryption */
+| SIGN LPAREN texp COMMA texp RPAREN { app sign_op [$3; $5] }	/* Sign, Hash, Mac */
+| HASH LPAREN texp RPAREN { app hash_op [$3] }	/* Sign, Hash, Mac */
+| MAC LPAREN texp COMMA texp RPAREN {app mac_op [$3; $5] }	/* Sign, Hash, Mac */
 | atexp { $1 }
 
 ltexp:

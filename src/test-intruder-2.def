@@ -1,0 +1,196 @@
+#include "defs/intruder.def".
+
+Type a name.
+Type b name.
+Type c name.
+Type h name.
+Type i name.
+Type k name.
+Type m name.
+Type x name.
+Type y name.
+Type z name.
+Type na name.
+Type nb name.
+Type k1 name.
+Type k2 name.
+Type n3 name.
+Type n4 name.
+Type tt name.
+Type na1 name.
+Type agent_A name.
+Type agent_B name.
+Type agent_S name.
+Type pk name.
+Type pka name.
+Type pkb name.
+
+Define example : nat -> list tm -> list constraint -> prop
+by
+
+example 1 Vs Cs := 
+  Vs = (cons (var x) (cons (var y) nil)) /\
+  C1 = (dedl (cons (pr (nm a) (nm b)) (cons (en (nm c) (nm a)) nil)) (pr (var x) (nm b))) /\
+  C2 = (dedl nil (var y)) /\
+  Cs = cons C1 (cons C2 nil) ;
+
+example 2 Vs Cs := 
+  Vs = (cons (var x) nil) /\
+  C1 = (dedl (cons (nm a) nil) (var x)) /\
+  C2 = (dedl (cons (nm a) (cons (en (nm m) (en (nm a) (nm k))) (cons (en (var x) (nm k)) nil))) (nm m)) /\
+  Cs = cons C1 (cons C2 nil) ;
+
+example 3 Vs Cs :=
+  Vs = (cons (var x) nil) /\
+  C1 = dedl (cons (pr (nm a) (nm b)) (cons (en (nm c) (nm a)) nil)) (nm a) /\ 
+  Cs = cons C1 nil ;
+
+example 4 Vs Cs :=
+  Vs = (cons (var x) nil) /\
+  C1 = dedr (cons (nm a) (cons (nm b) (cons (en (nm c) (nm a)) nil))) (pr (var x) (nm b)) /\
+  Cs = cons C1 nil ;
+
+example 5 Vs Cs := 
+  Vs = (cons (var x) nil) /\
+  C1 = dedr (cons (nm b) nil) (pr (var x) (nm b)) /\
+  Cs = cons C1 nil ;
+
+example 6 Vs Cs :=
+  Vs = (cons (var x) (cons (var y) nil)) /\
+  C1 = dedl (cons (nm a) nil) (var x) /\
+  C2 = dedl (cons (en (var x) (nm a)) (cons (nm a) nil)) (var y) /\
+  C3 = dedl (cons (en (var x) (nm a)) (cons (nm a) (cons (nm k) nil))) (pr (var x) (var y)) /\
+  Cs = cons C1 (cons C2 (cons C3 nil)) ;
+
+example 7 Vs Cs :=
+  Vs = (cons (var x) (cons (var y) nil)) /\
+  C1 = dedl (cons (nm a) nil) (var x) /\
+  C2 = dedl (cons (en (var x) (nm a)) (cons (nm a) nil)) (pr (var x) (var y)) /\
+  Cs = cons C1 (cons C2 nil) ;
+
+example 8 Vs Cs :=
+   Vs = nil /\ 
+   Cs = (cons (dedl (cons (nm tt)
+               (cons (nm agent_S)
+                  (cons (nm agent_B) (cons (nm agent_A) nil))))
+         (en (pr (nm tt) (pr (nm agent_A) (nm h))) (nm n3)))
+   (cons (dedl (cons (nm tt)
+                  (cons (nm agent_S)
+                     (cons (nm agent_B) (cons (nm agent_A) nil))))
+            (en (pr (nm tt) (pr (nm agent_A) (nm h))) (nm n3)))
+      (cons (dedl (cons (nm agent_A)
+                     (cons (nm agent_B)
+                        (cons (nm agent_S)
+                           (cons (nm tt)
+                              (cons (en (pr (nm tt)
+                                           (pr (nm agent_A) (nm n4)))
+                                       (nm n3))
+                                 nil)))))
+               (nm agent_B))
+         nil))) ;
+
+example 9 Vs Cs := 
+  Vs = (cons (var x) nil) /\ 
+  Cs = (cons (dedl (cons (nm a) nil) (var x))
+   (cons (dedl (cons (nm a) nil) (var x))
+      (cons (dedl (cons (nm k) (cons (en (var x) (nm a)) (cons (nm a) nil)))
+               (en (nm a) (nm k)))
+         (cons (dedl (cons (nm k)
+                        (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                  (en (nm a) (nm k)))
+            (cons (dedl (cons (nm k)
+                           (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                     (en (nm a) (nm k)))
+               (cons (dedl (cons (nm k)
+                              (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                        (var x))
+                  (cons (dedl (cons (nm k)
+                                 (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                           (pr (var x) (en (nm a) (nm k))))
+                     nil))))))) ;
+
+example 10 Vs Cs :=
+  Vs = (cons (var x) nil) /\
+  C1 = (dedr (cons (nm a) nil) (var x)) /\
+  C2 = (dedl (cons (nm a) (cons (aen (nm m) (var x)) nil)) (nm m)) /\
+  Cs = (cons C1 (cons C2 nil)) ;
+
+% Example adapted from Comon-Lundh, Cortier and Zalinescu, ToCL 2010. 
+% Secrecy of nb is compromised. See example 3.7 in the paper.
+example 11 Vs Cs :=
+  Vs = (cons (var x) (cons (var y) nil)) /\ 
+  T0 = (cons (pub (nm a)) (cons (pub (nm b)) 
+       (cons (pub (nm i)) (cons (nm i) nil)))) /\ 
+  T1 = (cons (aen (pr (nm na) (pub (nm a))) (pub (nm i))) T0) /\ 
+  T2 = (cons (aen (pr (var x) (nm nb)) (pub (nm a))) T1) /\ 
+  T3 = (cons (aen (var y) (pub (nm i))) T2) /\
+  C1 = (dedl T1 (aen (pr (var x) (pub (nm a))) (pub (nm b)))) /\ 
+  C2 = (dedl T2 (aen (pr (nm na) (var y)) (pub (nm a)))) /\
+  C3 = (dedl T3 (aen (nm nb) (pub (nm b)))) /\
+  C4 = (dedl T3 (nm nb)) /\ 
+  Cs = (cons C1 (cons C2 (cons C3 (cons C4 nil)))) ;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Example adapted from Comon-Lundh, Cortier and Zalinescu, ToCL 2010. 
+% Authentication property. See example 3.8 in the paper. 
+% Violation of authentication corresponds to a solution such that
+% x =/= na1. 
+example 12 Vs Cs :=
+  Vs = (cons (var x) (cons (var y) nil)) /\ 
+  T0 = (cons (pub (nm a)) (cons (pub (nm b)) 
+       (cons (pub (nm i)) (cons (nm i) 
+       (cons (aen (pr (nm na1) (pub (nm a))) (pub (nm b))) nil))))) /\
+  T1 = (cons (aen (pr (nm na) (pub (nm a))) (pub (nm i))) T0) /\ 
+  T2 = (cons (aen (pr (var x) (nm nb)) (pub (nm a))) T1) /\ 
+  T3 = (cons (aen (var y) (pub (nm i))) T2) /\
+  C1 = (dedl T1 (aen (pr (var x) (pub (nm a))) (pub (nm b)))) /\ 
+  C2 = (dedl T2 (aen (pr (nm na) (var y)) (pub (nm a)))) /\
+  C3 = (dedl T3 (aen (nm nb) (pub (nm b)))) /\
+  Cs = (cons C1 (cons C2 (cons C3 nil)));
+
+% Example 4.2
+example 13 Vs Cs :=
+  Vs = (cons (var x) (cons (var y) nil)) /\
+  T1 = (cons (nm a) (cons (aen (nm k1) (nm a)) (cons (aen (nm k2) (nm a)) nil))) /\
+  T2 = (cons (en (var y) (var x)) T1) /\
+  C1 = (dedl T1 (pr (aen (var x) (nm a)) (aen (var y) (nm a)))) /\
+  C2 = (dedl T2 (nm k1)) /\
+  Cs = (cons C1 (cons C2 nil)).
+
+Define test_solve : nat -> prop
+by
+test_solve N := 
+    example N Vs Cs /\ 
+    printstr "Variables: " /\ print_list Vs /\ printstr "\n" /\
+    printstr "Solving: " /\ print_list_cst Cs /\ printstr "\n" /\
+    solve_constraints Vs Cs Sol /\
+    printstr "Solution: " /\ print_subst Sol /\ printstr "\n".
+
+Define test_trim : prop
+by
+test_trim :=
+  Vs = (cons (var x) nil) /\ 
+  Cs = (cons (dedl (cons (nm a) nil) (var x))
+   (cons (dedl (cons (nm a) nil) (var x))
+      (cons (dedl (cons (nm k) (cons (en (var x) (nm a)) (cons (nm a) nil)))
+               (en (nm a) (nm k)))
+         (cons (dedl (cons (nm k)
+                        (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                  (en (nm a) (nm k)))
+            (cons (dedl (cons (nm k)
+                           (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                     (en (nm a) (nm k)))
+               (cons (dedl (cons (nm k)
+                              (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                        (var x))
+                  (cons (dedl (cons (nm k)
+                                 (cons (en (var x) (nm a)) (cons (nm a) nil)))
+                           (pr (var x) (en (nm a) (nm k))))
+                     nil))))))) /\
+   trim_cst Cs nil Ds /\
+   printstr "\n" /\ 
+   printstr "Before trim: " /\ 
+   print_list_cst Cs /\ printstr "\n" /\ 
+   printstr "After trim: " /\
+   print_list_cst Ds /\ printstr "\n". 
+
