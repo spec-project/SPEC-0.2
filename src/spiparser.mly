@@ -53,7 +53,7 @@
   let hash_op = constid (pos 0) "hs"
   let mac_op  = constid (pos 0) "mac"
   (* Add tau *)
-  (* let tau_op = constid (pos 0) "tau" *)
+  let tau_op = constid (pos 0) "tauproc"
 
   let app s t = Input.pre_app (pos 0) s t 
   let lambda v t = Input.pre_lambda (pos 0) [v] t 
@@ -150,7 +150,8 @@ pexp:
 | lpref IN pexp { let t,(v1,v2) = $1 in app let_op [t; lambda v1 (lambda v2 $3)] }
 | BANG pexp { app bang_op [$2] }
 | apexp { $1 }
-/* | TAU { tau_op } */	/* Add tau */
+| TAU { app tau_op [zero_op]}		/* Add tau */
+| TAU DOT pexp { app tau_op [$3] }	/* Add tau */
 
 apexp:
 | LPAREN pexp RPAREN { $2 }
@@ -217,10 +218,10 @@ texp:
 | name_id { $1 }
 | LANGLE texp COMMA ltexp RANGLE { mkpairs ($2::$4)  }
 | ENC LPAREN texp COMMA texp RPAREN { app en_op [$3;$5] }
-| AENC LPAREN texp COMMA texp RPAREN { app aen_op [$3;$5] } /* Asymmetric Encryption */
-| PUB LPAREN texp RPAREN { app pub_op [$3] } /* Asymmetric Encryption */
+| AENC LPAREN texp COMMA texp RPAREN { app aen_op [$3;$5] }	/* Asymmetric Encryption */
+| PUB LPAREN texp RPAREN { app pub_op [$3] }			/* Asymmetric Encryption */
 | SIGN LPAREN texp COMMA texp RPAREN { app sign_op [$3; $5] }	/* Sign, Hash, Mac */
-| HASH LPAREN texp RPAREN { app hash_op [$3] }	/* Sign, Hash, Mac */
+| HASH LPAREN texp RPAREN { app hash_op [$3] }			/* Sign, Hash, Mac */
 | MAC LPAREN texp COMMA texp RPAREN {app mac_op [$3; $5] }	/* Sign, Hash, Mac */
 | atexp { $1 }
 

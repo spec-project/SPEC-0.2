@@ -33,28 +33,30 @@
 Kind tm type.
 Kind name type.
 
-Type ct		(string -> tm). % constants
-Type var	(name -> tm). % variables 
-Type nm		(name -> tm). % names
-Type bn		(tm -> tm).   % constructor for marking bound names; needed when recursing over binders. 
-Type en		(tm -> tm -> tm). % symmetric encryption
-Type pr		(tm -> tm -> tm). % pairing constructor
+Type ct		(string -> tm).		% constants
+Type var	(name -> tm).		% variables 
+Type nm		(name -> tm).		% names
+Type bn		(tm -> tm).		% constructor for marking bound names; needed when recursing over binders. 
+Type en		(tm -> tm -> tm).	% symmetric encryption
+Type pr		(tm -> tm -> tm).	% pairing constructor
 % Asymmetric Encryption
-Type aen        (tm -> tm -> tm). % asymmetric encryption
-Type pub        (tm -> tm). % public key constructor
+Type aen        (tm -> tm -> tm).	% asymmetric encryption
+Type pub        (tm -> tm).		% public key constructor
 % Sign, Hash, Mac
-Type sign	(tm -> tm -> tm). % signature
-Type hs		(tm -> tm). % hash function
-Type mac 	(tm -> tm -> tm). % mac function
+Type sign	(tm -> tm -> tm).	% signature
+Type hs		(tm -> tm).		% hash function
+Type mac 	(tm -> tm -> tm).	% mac function
 
 % Currently not used: 
-% Type zz		tm. % zero
-% Type succ	(tm -> tm). % successor
-% Type vk	(tm -> tm). % verification key
+% Type zz		tm.		% zero
+% Type succ	(tm -> tm).		% successor
+% Type vk	(tm -> tm).		% verification key
 
 % process constructors
 Kind proc type.
 Type zero proc.
+% Add tau
+Type tauproc proc -> proc.
 Type par proc -> proc -> proc.
 Type nu  (tm -> proc) -> proc.
 Type match tm -> tm -> proc -> proc.

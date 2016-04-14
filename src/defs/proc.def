@@ -29,6 +29,10 @@ Type defAbs  (tm -> def_body) -> def_body.
 
 Define simplify : proc -> proc -> prop by 
 simplify zero zero ; 
+
+% Add tau
+simplify (tauproc Q) (tauproc Q);
+
 simplify (par P1 P2) Q := 
   simplify P1 Q1 /\ 
   simplify P2 Q2 /\ 
@@ -125,6 +129,10 @@ print_proc (plus P Q) :=
 print_proc (nu x\ P x) :=
   printstr "nu(" /\ print_nu_proc (nu x\ P x) ;
 
+% Add tau
+print_proc (tauproc Q) :=
+  printstr "tau." /\ print_proc Q;
+
 print_proc (match X Y P) :=
   printstr "[" /\ print_term X /\ printstr " = " /\ print_term Y /\ printstr "]" /\
   print_proc_aux P ; 
@@ -177,6 +185,9 @@ print_act (act M) := print_term M.
 Define copyproc : list sub_pair -> proc -> proc -> prop by 
 
 copyproc L zero zero ; 
+
+% Add tau
+copyproc L (tauproc Q) (tauproc Q);
 
 copyproc L (par P Q) (par S T) :=
   copyproc L P S /\ copyproc L Q T ; 
