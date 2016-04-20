@@ -55,8 +55,6 @@ Type mac 	(tm -> tm -> tm).	% mac function
 % process constructors
 Kind proc type.
 Type zero proc.
-% Add tau
-Type tauproc proc -> proc.
 Type par proc -> proc -> proc.
 Type nu  (tm -> proc) -> proc.
 Type match tm -> tm -> proc -> proc.

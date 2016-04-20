@@ -52,8 +52,6 @@
   let sign_op = constid (pos 0) "sign"
   let hash_op = constid (pos 0) "hs"
   let mac_op  = constid (pos 0) "mac"
-  (* Add tau *)
-  let tau_op = constid (pos 0) "tauproc"
 
   let app s t = Input.pre_app (pos 0) s t 
   let lambda v t = Input.pre_lambda (pos 0) [v] t 
@@ -150,8 +148,6 @@ pexp:
 | lpref IN pexp { let t,(v1,v2) = $1 in app let_op [t; lambda v1 (lambda v2 $3)] }
 | BANG pexp { app bang_op [$2] }
 | apexp { $1 }
-| TAU { app tau_op [zero_op]}		/* Add tau */
-| TAU DOT pexp { app tau_op [$3] }	/* Add tau */
 
 apexp:
 | LPAREN pexp RPAREN { $2 }
