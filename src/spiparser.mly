@@ -186,7 +186,6 @@ nupref:
 
 cpref: 
 | CASE texp OF encpat { ($2,$4) }
-/* | CASE texp OF aencpat { ($2. $4) }  */
 
 lpref:
 | LET prpat EQ texp { ($4,$2) }
@@ -204,12 +203,6 @@ name_id:
 
 encpat:
 | ENC LPAREN ID COMMA texp RPAREN { ((pos 0,$3,Input.Typing.fresh_typaram()),$5) }
-
-/* Asymmetric Encryption - Not in use*/
-/*
-aenpat:
-| AENC LPAREN ID COMMA texp RPAREN { ((pos 0,$3,Input.Typing.fresh_typaram()),$5) }
-*/
 
 prpat:
 | LANGLE ID COMMA ID RANGLE { ((pos 0,$2,Input.Typing.fresh_typaram()), (pos 0,$4,Input.Typing.fresh_typaram()) ) }

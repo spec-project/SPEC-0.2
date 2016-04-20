@@ -148,7 +148,7 @@ red 5 Vs (dedl S M) Cs Ds :=
   _if (msg_type U ct_type) (T2 = T1) (insert U T1 T2) /\
   Ds = cons (dedr T V) (cons (dedl T2 M) Cs);
 
-% Asymmetric Encryption
+%% Asymmetric Encryption
 red 5 Vs (dedl S M) Cs Ds :=
   select S (aen U (pub X)) T /\
   _if (msg_type X ct_type) (T1 = T) (insert X T T1) /\

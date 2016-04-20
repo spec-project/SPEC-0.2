@@ -235,8 +235,20 @@ apply_subst_bt Sub1 Sub2 (cons (out M N) L) (cons (out U V) R) :=
 Define apply_RC : list bt_pair -> list thy_pair -> 
                   list bt_pair -> list thy_pair -> prop
 by 
+
 apply_RC H_in Thy_in H_out Thy_out := 
   select Thy_in (mp (en M N) (en R T))  Rest /\ 
+  split_thy Rest S1 S2 /\ 
+  C1 = (dedl S1 N) /\
+  C2 = (dedl S2 T) /\ 
+  (fun_RC1 H_in C1 Sub1 Sub2 \/ fun_RC2 H_in C2 Sub1 Sub2) /\
+  apply_subst_bt Sub1 Sub2 H_in H_out /\
+  apply_subst_thy  Sub1 Sub2 Thy_in Thy /\
+  reduce Thy Thy_out;
+
+% Asymmetric Encryption
+apply_RC H_in Thy_in H_out Thy_out := 
+  select Thy_in (mp (aen M (pub N)) (aen R (pub T)))  Rest /\ 
   split_thy Rest S1 S2 /\ 
   C1 = (dedl S1 N) /\
   C2 = (dedl S2 T) /\ 

@@ -72,7 +72,7 @@ Define get_var : tm -> list tm -> list tm -> prop by
 
 Define msg_type : tm -> tm_type -> prop by 
   msg_type (nm X) nm_type ; 
-  msg_type (ct X) ct_type ; 
+  msg_type (ct X) ct_type ;
   msg_type (var X) var_type ;
   msg_type (pr U V) pr_type ;
   msg_type (en U V) en_type;

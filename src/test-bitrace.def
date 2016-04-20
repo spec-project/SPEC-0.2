@@ -1,9 +1,9 @@
-#include "defs/bitrace.def". 
-
+#include "defs/bitrace.def".
 % Tests
 
 Type a name.
 Type b name.
+Type c name.
 Type k name.
 Type l name.
 Type m name. 
@@ -93,36 +93,42 @@ btex 5 Bt Sub :=
   P6 = in (pr (var x) (var y)) (pr (var x) (var y)) /\ 
   Bt = cons P1 (cons P2 (cons P3 (cons P4 (cons P5 (cons P6 nil))))) /\
   Sub = cons (sub (var x) (var x)) 
-        (cons (sub (var y) (en (nm b) (nm k))) nil).
+        (cons (sub (var y) (en (nm b) (nm k))) nil);
+
+btex 6 Bt Sub :=
+  P1 = out (aen (nm b) (pub (nm k))) (aen (nm c) (pub (nm k))) /\
+  Bt = cons P1 nil /\
+  Sub = cons (sub (var x) (var x)) 
+        (cons (sub (var y) (var y)) nil).
 
 Define test_RC : nat -> list sub_pair -> list sub_pair -> prop
 by
 
 test_RC 1 Sub1 Sub2 :=
-  btex 3 Bt S /\
+  btex 6 Bt S /\
   printstr "Bitrace : " /\ print_bitrace Bt /\ printstr "\n" /\
   C = (dedl (cons (nm a) (cons (en (var x) (nm a)) (cons (nm k) nil)))
             (en (nm a) (nm k))) /\
   fun_RC1 Bt C Sub1 Sub2;
 
 test_RC 2 Sub1 Sub2 :=
-  btex 3 Bt S /\
+  btex 6 Bt S /\
   C = (dedl (cons (nm b) (cons (en (var x) (nm b)) (cons (nm k) nil)))
             (en (nm b) (nm k))) /\
   fun_RC2 Bt C Sub1 Sub2.
 
 
-Define test_RS : nat -> list sub_pair -> list sub_pair -> prop
+Define test_RS : nat -> nat -> list sub_pair -> list sub_pair -> prop
 by
   
-test_RS 1 Sub1 Sub2 := 
-  btex 4 Bt Sub /\ 
+test_RS 1 N Sub1 Sub2 := 
+  btex N Bt Sub /\ 
   printstr "Bitrace : " /\ print_bitrace Bt /\ printstr "\n" /\
   printstr "Intial subst : " /\ print_subst Sub /\ printstr "\n" /\
   fun_RS1 Bt Sub Sol Sub1 Sub2;
 
-test_RS 2 Sub1 Sub2 := 
-  btex 5 Bt Sub /\ 
+test_RS 2 N Sub1 Sub2 := 
+  btex N Bt Sub /\ 
   printstr "Bitrace : " /\ print_bitrace Bt /\ printstr "\n" /\
   printstr "Intial subst : " /\ print_subst Sub /\ printstr "\n" /\
   fun_RS2 Bt Sub Sol Sub1 Sub2.

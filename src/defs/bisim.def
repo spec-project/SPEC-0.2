@@ -230,7 +230,35 @@ decomp_bt_pair Thy Acc (nm X) (nm Y) L :=
 %       (L = (cons (out (hs X) (hs Y)) Acc)).
 decomp_bt_pair Thy Acc (pr X Y) (pr U V) L :=
   decomp_bt_pair Thy Acc X U Acc1 /\ 
-  decomp_bt_pair Thy Acc1 Y V L ; 
+  decomp_bt_pair Thy Acc1 Y V L ;
+%% Add Asymmetric Encryption
+decomp_bt_pair Thy Acc (aen X K) (aen Y M) L :=
+  _if (K = pub U /\ M = pub V /\ deduce_r Thy U V)
+      (
+	decomp_bt_pair Thy Acc X Y L
+      )
+      (
+        _if (det_mem (mp (aen X K) (aen Y M)) Thy)
+            (L = Acc)
+            (L = (cons (out (aen X K) (aen Y M)) Acc))
+      );
+decomp_bt_pair Thy Acc (pub X) (pub Y) L :=
+  _if (deduce_r Thy X Y \/ det_mem (mp (pub X) (pub Y)) Thy)
+      (L = Acc)
+      (L = (cons (out (pub X) (pub Y)) Acc));
+%% Sign, Hash, Mac
+decomp_bt_pair Thy Acc (sign X Y) (sign U V) L :=
+ _if ((deduce_r Thy X U /\ deduce_r Thy Y V) \/ det_mem (mp (sign X Y) (sign U V)) Thy)
+      (L = Acc)
+      (L = (cons (out (sign X Y) (sign U V)) Acc));
+decomp_bt_pair Thy Acc (hs X) (hs Y) L :=
+  _if (deduce_r Thy X Y \/ det_mem (mp (hs X) (hs Y)) Thy)
+      (L = Acc)
+      (L = (cons (out (hs X) (hs Y)) Acc));
+decomp_bt_pair Thy Acc (mac X Y) (mac U V) L :=
+ _if ((deduce_r Thy X U /\ deduce_r Thy Y V) \/ det_mem (mp (mac X Y) (mac U V)) Thy)
+      (L = Acc)
+      (L = (cons (out (mac X Y) (mac U V)) Acc));
 decomp_bt_pair Thy Acc (en X K) (en Y M) L :=
   _if (deduce_r Thy K M)
       ( 

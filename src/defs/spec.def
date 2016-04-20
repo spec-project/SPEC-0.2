@@ -132,6 +132,21 @@ free_names_term (bn X) Acc Acc ;
 free_names_term (pr X Y) Acc L :=
   free_names_term X Acc L1 /\
   free_names_term Y L1 L ; 
+% Add Asymmetric Encryption
+free_names_term (aen X Y) Acc L :=
+  free_names_term X Acc L1 /\
+  free_names_term Y L1 L;
+free_names_term (pub X) Acc L :=
+  free_names_term X Acc L;
+%% Sign, Hash, Mac
+free_names_term (sign X Y) Acc L :=
+  free_names_term X Acc L1 /\
+  free_names_term Y L1 L;
+free_names_term (hs X) Acc L :=
+  free_names_term X Acc L;
+free_names_term (mac X Y) Acc L :=
+  free_names_term X Acc L1 /\
+  free_names_term Y L1 L;
 free_names_term (en X Y) Acc L :=
   free_names_term X Acc L1 /\
   free_names_term Y L1 L.
