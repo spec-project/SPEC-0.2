@@ -68,6 +68,8 @@ deduce_r Thy (en U V) (en R T) := deduce_r Thy U R /\ deduce_r Thy V T ;
 % Asymmetric Encryption
 deduce_r Thy (aen U V) (aen R T) := deduce_r Thy U R /\ deduce_r Thy V T ;
 deduce_r Thy (pub X) (pub Y) := deduce_r Thy X Y ;
+% Blind
+deduce_r Thy (blind U V) (blind R T) := deduce_r Thy U R /\ deduce_r Thy V T ;
 % Sign, Hash, Mac
 deduce_r Thy (sign U V) (sign R T) := deduce_r Thy U R /\ deduce_r Thy V T ;
 deduce_r Thy (hs X) (hs Y) := deduce_r Thy X Y ;
@@ -94,6 +96,8 @@ deduce_inv_r Thy (en U V) (en R T) :=  deduce_inv_r Thy U R /\ deduce_inv_r Thy 
 % Asymmetric Encryption
 deduce_inv_r Thy (aen U V) (aen R T) := deduce_inv_r Thy U R /\ deduce_inv_r Thy V T ;
 deduce_inv_r Thy (pub X) (pub Y) := deduce_inv_r Thy X Y;
+% Blind
+deduce_inv_r Thy (blind U V) (blind R T) := deduce_inv_r Thy U R /\ deduce_inv_r Thy V T ;
 % Sign, Hash, Mac
 deduce_inv_r Thy (sign U V) (sign R T) := deduce_inv_r Thy U R /\ deduce_inv_r Thy V T ;
 deduce_inv_r Thy (hs X) (hs Y) := deduce_inv_r Thy X Y ;
@@ -114,6 +118,8 @@ ded1_r S (en U V) := ded1_r S U /\ ded1_r S V ;
 % Asymmetric Encryption
 ded1_r S (aen U V) := ded1_r S U /\ ded1_r S V ;
 ded1_r S (pub X) := ded1_r S X ;
+% Blind
+ded1_r S (blind U V) := ded1_r S U /\ ded1_r S V ;
 % Sign, Hash, Mac
 ded1_r S (sign U V) := ded1_r S U /\ ded1_r S V ;
 ded1_r S (hs X) := ded1_r S X ; 
@@ -264,6 +270,8 @@ eq_msg_type (aen X Y) (aen U V) :=
   (Y = pub K /\ V = pub M) \/ 
   (_not(Y = pub K) /\ _not(V = pub M));
 eq_msg_type (pub X) (pub Y);
+% Blind
+eq_msg_type (blind X Y) (blind U V) ;
 % Sign, Hash, Mac
 eq_msg_type (sign X Y) (sign U V) ;
 eq_msg_type (hs X) (hs U) ;

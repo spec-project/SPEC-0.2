@@ -30,6 +30,8 @@ Type en_type	tm_type.
 % Asymmetric Encryption
 Type aen_type	tm_type.
 Type pub_type	tm_type.
+% Blind
+Type blind_type tm_type.
 % Sign, Hash, Mac
 Type sign_type 	tm_type.
 Type hs_type	tm_type.
@@ -50,6 +52,8 @@ closed (en U V) := closed U /\ closed V;
 % Asymmetric Encryption
 closed (aen U V) := closed U /\ closed V;
 closed (pub U) := closed U;
+% Blind
+closed (blind U V) := closed U /\ closed V;
 % Sign, Hash, Mac
 closed (sign U V) := closed U /\ closed V;
 closed (hs U) := closed U;
@@ -65,6 +69,8 @@ Define get_var : tm -> list tm -> list tm -> prop by
   % Asymmetric Encryption
   get_var (aen X Y) VarIn VarOut := get_var X VarIn Vs /\ get_var Y Vs VarOut;
   get_var (pub X) VarIn VarOut := get_var X VarIn VarOut;
+  % Blind
+  get_var (blind X Y) VarIn VarOut := get_var X VarIn Vs /\ get_var Y Vs VarOut;
   % Sign, Hash, Mac
   get_var (sign X Y) VarIn VarOut := get_var X VarIn Vs /\ get_var Y Vs VarOut;
   get_var (hs X) VarIn VarOut := get_var X VarIn VarOut;
@@ -79,6 +85,8 @@ Define msg_type : tm -> tm_type -> prop by
   % Asymmetric Encryption
   msg_type (aen U V) aen_type;
   msg_type (pub U) pub_type;
+  % Blind
+  msg_type (blind U V) blind_type;
   % Sign, Hash, Mac
   msg_type (sign U V) sign_type;
   msg_type (hs U) hs_type;
@@ -91,6 +99,8 @@ Define free : tm -> tm -> prop by
   % Asymmetric Encryption
   free V (aen X Y) := free V X \/ free V Y;
   free V (pub X) := free V X;
+  % Blind
+  free V (blind X Y) := free V X \/ free V Y;
   % Sign, Hash, Mac
   free V (sign X Y) := free V X \/ free V Y;
   free V (hs X) := free V X;
@@ -105,6 +115,8 @@ Define not_free : tm -> tm -> prop by
   % Asymmetric Encryption
   not_free V (aen X Y) := not_free V X /\ not_free V Y;
   not_free V (pub X) := not_free V X;
+  % Blind
+  not_free V (aen X Y) := not_free V X /\ not_free V Y;
   % Sign, Hash, Mac
   not_free V (sign X Y) := not_free V X /\ not_free V Y;
   not_free V (hs X) := not_free V X;
@@ -122,6 +134,8 @@ Define simp_cp : tm -> tm -> prop by
   % Asymmetric Encryption
   simp_cp (aen X Y) (aen U V) := simp_cp X U /\ simp_cp Y V;
   simp_cp (pub X) (pub U) := simp_cp X U;
+  % Blind
+  simp_cp (blind X Y) (blind U V) := simp_cp X U /\ simp_cp Y V;
   % Sign, Hash, Mac
   simp_cp (sign X Y) (sign U V) := simp_cp X U /\ simp_cp Y V;
   simp_cp (hs X) (hs U) := simp_cp X U;
@@ -145,6 +159,8 @@ Define copyterm : list sub_pair  -> tm -> tm -> prop by
   % Asymmetric Encryption
   copyterm L (aen X Y) (aen U V) := copyterm L X U /\ copyterm L Y V;
   copyterm L (pub X) (pub U) := copyterm L X U;
+  % Blind
+  copyterm L (blind X Y) (blind U V) := copyterm L X U /\ copyterm L Y V;
   % Sign, Hash, Mac
   copyterm L (sign X Y) (sign U V) := copyterm L X U /\ copyterm L Y V;
   copyterm L (hs X) (hs U) := copyterm L X U;

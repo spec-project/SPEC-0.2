@@ -48,6 +48,8 @@ struct
   (* Asymmetric Encryption *)
   let msg_aen = Term.atom "aen"
   let msg_pub = Term.atom "pub"
+  (* Blind *)
+  let msg_blind = Term.atom "blind"
   (* Sign, Hash, Mac *)
   let msg_sign = Term.atom "sign"
   let msg_hash = Term.atom "hs"

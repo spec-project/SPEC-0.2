@@ -91,7 +91,20 @@ expand_defs (case M N (x\ P x)) (case U V (x\ Q x)) :=
   nabla x, expand_defs (P (bn x))  (Q x) ; 
 expand_defs (let M (x\y\P x y)) (let N (x\y\ Q x y)) := 
   simp_cp M N /\
-  nabla x y, expand_defs (P (bn x) (bn y)) (Q x y) ; 
+  nabla x y, expand_defs (P (bn x) (bn y)) (Q x y) ;
+% CheckSign
+expand_defs (checksign X Y P) (checksign U V Q) :=
+  simp_cp X U /\ simp_cp Y V /\ expand_defs P Q ; 
+% Adec, Unblind, Getmsg
+expand_defs (letadec M N (x\ P x)) (letadec U V (x\ Q x)) :=
+  simp_cp M U /\ simp_cp N V /\
+  nabla x, expand_defs (P (bn x)) (Q x) ;
+expand_defs (letunblind M N (x\ P x)) (letunblind U V (x\ Q x)) :=
+  simp_cp M U /\ simp_cp N V /\
+  nabla x, expand_defs (P (bn x)) (Q x) ;
+expand_defs (letgetmsg M (x\ P x)) (letgetmsg N (x\ Q x)) :=
+  simp_cp M N /\
+  nabla x, expand_defs (P (bn x)) (Q x) ;
 expand_defs (bang P) (bang Q) := expand_defs P Q.
 
 Kind oprop type.
@@ -138,7 +151,11 @@ free_names_term (aen X Y) Acc L :=
   free_names_term Y L1 L;
 free_names_term (pub X) Acc L :=
   free_names_term X Acc L;
-%% Sign, Hash, Mac
+% Blind
+free_names_term (blind X Y) Acc L :=
+  free_names_term X Acc L1 /\
+  free_names_term Y L1 L;
+% Sign, Hash, Mac
 free_names_term (sign X Y) Acc L :=
   free_names_term X Acc L1 /\
   free_names_term Y L1 L;
@@ -190,6 +207,12 @@ free_names_proc (let M P) Acc L :=
   free_names_term M Acc Acc1 /\
   nabla x y, 
   free_names_proc (P (bn x) (bn y)) Acc1 L ; 
+% Adec, Unblinding, Getmsg
+free_names_proc (letadec M N P) Acc L :=
+  free_names_term M Acc Acc1 /\
+  free_names_term N Acc1 Acc2 /\
+  nabla x, 
+  free_names_proc (P (bn x)) Acc2 L ; 
 free_names_proc (bang P) Acc L := 
   free_names_proc P Acc L.
 

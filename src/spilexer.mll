@@ -71,8 +71,13 @@ rule token = parse
 | "pub" { PUB }
 | "sign" { SIGN }
 | "vk" { VK }
-| "mac" { MAC }	(* Sign, Hash, Mac *)
-| "tau" { TAU } (* Add tau *)
+| "mac" { MAC }			(* Sign, Hash, Mac *)
+| "blind" { BLIND }		(* Blind *)
+| "tau" { TAU } 		(* Add tau *)
+| "checksign" { CHECKSIGN }	(* Add CheckSign *)
+| "adec" { ADEC } 		(* Asymmetric Decode *)
+| "unblind" { UNBLIND }		(* Unblind *)
+| "getmsg" { GETMSG }		(* Get Message *)
 
 | name as n { ID n }
 | aname as n { AID n} 

@@ -108,30 +108,27 @@ by
 
 red 2 Vs (dedr S (pr X Y)) Cs Ds := 				
   Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ; 
-
-%% Sign, Hash, Mac
-red 2 Vs (dedr S (sign X Y)) Cs Ds := 
-  Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ; 
-
-red 2 Vs (dedr S (hs X)) Cs Ds :=
-  Ds = (cons (dedr S X) Cs) ;
-
-red 2 Vs (dedr S (mac X Y)) Cs Ds :=
-  Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ; 
-
-%%
 		
 red 2 Vs (dedr S (en X Y)) Cs Ds := 
   Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ;
 
-%% Asymmetric Encryption
+% Asymmetric Encryption
 red 2 Vs (dedr S (aen X Y)) Cs Ds :=
   Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ;
-
 red 2 Vs (dedr S (pub X)) Cs Ds :=
   Ds = (cons (dedr S X) Cs);
 
-%%
+% Blind
+red 2 Vs (dedr S (blind X Y)) Cs Ds :=
+  Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ;
+
+% Sign, Hash, Mac
+red 2 Vs (dedr S (sign X Y)) Cs Ds := 
+  Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ; 
+red 2 Vs (dedr S (hs X)) Cs Ds :=
+  Ds = (cons (dedr S X) Cs) ;
+red 2 Vs (dedr S (mac X Y)) Cs Ds :=
+  Ds = (cons (dedr S X) (cons (dedr S Y) Cs)) ;
 
 red 3 Vs (dedl S M) Cs Ds :=
   Ds = (cons (dedr S M) Cs) ; 
@@ -162,7 +159,7 @@ red 5 Vs (dedl S M) Cs Ds :=
 %   Ds = cons (dedr T (vk V)) (cons (dedl (cons U T) M) Cs).
 
 
-% % Asymmetric encryption: special case where the key is a variable.
+% Asymmetric encryption: special case where the key is a variable.
 Define red5_aen_var : constraint -> list constraint -> list constraint -> list constraint -> list sub_pair -> prop
 by
 red5_aen_var (dedl S M) Pre Post Cs Subst :=
