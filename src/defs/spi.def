@@ -42,6 +42,8 @@ Type pr		(tm -> tm -> tm).	% pairing constructor
 % Asymmetric Encryption
 Type aen        (tm -> tm -> tm).	% asymmetric encryption
 Type pub        (tm -> tm).		% public key constructor
+% Blind Signature
+Type blind	(tm -> tm -> tm).
 % Sign, Hash, Mac
 Type sign	(tm -> tm -> tm).	% signature
 Type hs		(tm -> tm).		% hash function

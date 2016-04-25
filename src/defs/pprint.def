@@ -31,6 +31,8 @@ Define print_term : tm -> prop by
   % Asymmetric Encryption
   print_term (aen M N) := printstr "aenc(" /\ print_term M /\ printstr "," /\ print_term N /\ printstr ")";
   print_term (pub M) := printstr "pub(" /\ print_term M /\ printstr ")";
+  % Blind Signature
+  print_term (blind M N) := printstr "blind(" /\ print_term M /\ printstr "," /\ print_term N /\ printstr ")";
   % Sign, Hash, Mac
   print_term (sign M N) := printstr "sign(" /\ print_term M /\ printstr "," /\ print_term N /\ printstr ")";
   print_term (hs M) := printstr "hash(" /\ print_term M /\ printstr ")";
