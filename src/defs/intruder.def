@@ -74,6 +74,27 @@ trim_cst (cons C L) Rhs Ds :=
       ).
 
 
+Define print_cst : constraint -> prop
+by 
+print_cst (dedr S M) :=
+  printstr "(" /\ plist S /\ printstr " |-_R " /\ print_term M /\ printstr ")" ; 
+print_cst (dedl S M) :=
+  printstr "(" /\ plist S /\ printstr " |- " /\ print_term M /\ printstr ")".
+ 
+Define plist_cst : list constraint -> prop
+by
+plist_cst nil ;
+plist_cst (cons X nil) := print_cst X ; 
+plist_cst (cons X (cons Y L)) :=
+  print_cst X /\
+  printstr " ; \n" /\
+  plist_cst (cons Y L).
+
+Define print_list_cst : list constraint -> prop
+by
+print_list_cst L :=
+  printstr"[" /\ plist_cst L /\ printstr "]".
+
 Define redundant_aux : constraint -> list constraint -> prop by
 redundant_aux C (cons D L) :=
   _if (rhs_cst C M /\ rhs_cst D M)
@@ -157,26 +178,13 @@ red 5 Vs (dedl S M) Cs Ds :=
   select S (blind U V) T /\
   _if (msg_type V ct_type) (T1 = T) (insert V T T1) /\
   _if (msg_type U ct_type) (T2 = T1) (insert U T1 T2) /\
-  Ds = cons (dedr T V) (cons (dedl T2 M) Cs);
-
-% % Sign, Blind
-red 5 Vs (dedl S M) Cs Ds :=
-  select S (sign (blind M N) K) T /\
-  _if (det_mem (sign M K) T) (T1 = T) (T1 = cons (sign M K) T) /\
-  Ds = cons (dedr T N) (cons (dedl T1 M) Cs);
-
-% % Sign
-red 5 Vs (dedl S M) Cs Ds :=
-  det_mem (sign U V) S /\
-  _not (msg_type U ct_type \/ det_mem U S) /\
-  Ds = cons (dedl (cons U S) M) Cs.
+  Ds = cons (dedr T V) (cons (dedl T2 M) Cs).
 
 % % Signing. Keep the signed message (SPEC original commented source code). 
 % red 5 Vs (dedl S M) Cs Ds :=
 %   select S (sign U V) T /\ 
 %   _not (msg_type U ct_type \/ det_mem U T) ; 
 %   Ds = cons (dedr T (vk V)) (cons (dedl (cons U T) M) Cs).
-
 
 % Asymmetric encryption: special case where the key is a variable.
 Define red5_aen_var : constraint -> list constraint -> list constraint -> list constraint -> list sub_pair -> prop
@@ -190,13 +198,52 @@ red5_aen_var (dedl S M) Pre Post Cs Subst :=
    apply Subst (dedl T1 M) C /\
    copylist Subst T R /\
    append Pre1 (cons (dedr R (var X)) (cons C Post1)) Cs.
-  
 
+% % Sign, Blind
+%red 5 Vs (dedl S M) Cs Ds :=
+%  select S (sign (blind M N) K) T /\
+%  _if (det_mem (sign M K) T) (T1 = S) (T1 = cons (sign M K) S) /\
+%  Ds = cons (dedr T N) (cons (dedl T1 M) Cs);
+%
+% % Sign
+%red 5 Vs (dedl S M) Cs Ds :=
+%  det_mem (sign U V) S /\
+%  _not (msg_type U ct_type \/ det_mem U S) /\
+%  Ds = cons (dedl (cons U S) M) Cs.
+%
+% Notes: (sign (blind M N ) K) and (sign U V) are not removed from lhs of DS like the other rules, it causes a loop.
+% Therefore these 2 rules are rewritten. Processed is the list of terms which were already applied these 2 rules.
+% This will avoid the loop
+Define iter_red5 : constraint -> constraint -> list constraint -> list constraint -> list tm -> list tm -> prop
+by
+iter_red5 (dedr S M) (dedr S M) Post Post Processed Processed;
+
+iter_red5 (dedl S L) D Post Post1 Processed NewProcessed :=
+  _not (det_mem (sign U V) S) /\
+  D = dedl S L /\ Post1 = Post /\ NewProcessed = Processed;
+
+iter_red5 (dedl S L) D Post Post1 Processed NewProcessed :=
+  select S (sign U K) T /\ _not (det_mem (sign U K) Processed) /\
+  _if (U = blind M N)
+    (
+      insert U T T1 /\
+      insert (sign M K) T1 T2 /\
+      D = dedl T1 L /\
+      insert (dedr T N) Post Post1
+    )
+    (
+      insert U T T1 /\
+      D = dedl T1 L /\
+      Post1 = Post
+    ) /\
+  NewProcessed = cons (sign U K) Processed.
+
+
+% % Decompose Pair
 % red 4 Vs (dedl S M) Cs Ds :=
 %   select S (pr U V) T,
 %   insert V T T1, insert U T1 T2, 
 %   Ds = (cons (dedl T2 M) Cs).
-
 Define decpr : list tm -> list tm -> prop by 
 decpr nil nil ;
 decpr (cons (pr U V) L) R :=
@@ -206,46 +253,42 @@ decpr (cons (pr U V) L) R :=
 decpr (cons C L) (cons C R) :=
   _not(C = pr U V) /\ decpr L R.
 
-% Step 4 is asyncronous; we can always eagerly decompose pairs. 
+% Step 4 is asyncronous; we can always eagerly decompose pairs.
 
 Define iter_red4 : constraint -> constraint -> prop
 by
 iter_red4 (dedl S M) (dedl T M) := decpr S T ;
 iter_red4 (dedr S M) (dedr S M).
 
-% rewriting deducibility constraints to a solved form.
-% we relax the condition of the solved form a bit; we shall
+% Rewriting deducibility constraints to a solved form.
+% We relax the condition of the solved form a bit; we shall
 % allow both (dedl S (var V)) and (dedr S (var V)) in the solved form.
-
 Define solved_form : constraint -> prop
 by
 solved_form (dedl S (var V)) ;
 solved_form (dedr S (var V)).
 
+% Processed is the list of terms in the lhs of constraint system which are already applied LHS Sign rule and LHS Sign-Blind rule
 Define solve : list tm -> list sub_pair -> list constraint -> 
-               list constraint -> list sub_pair -> prop
+               list constraint -> list sub_pair -> list tm -> prop
 by
-solve Vs Subst P nil Subst ; 
-solve Vs S_In Pre (cons C Post) S_Out :=
+solve Vs Subst Pre nil Subst Processed ; 
+solve Vs S_In Pre (cons C Post) S_Out Processed :=
   _if (redundant C Pre)
-      ( solve Vs S_In Pre Post S_Out)
+      (  solve Vs S_In Pre Post S_Out Processed  )
       (
         _if (solved_form C)
-            (  append Pre (cons C nil) Pre1 /\ solve Vs S_In Pre1 Post S_Out)
+            (  append Pre (cons C nil) Pre1 /\ solve Vs S_In Pre1 Post S_Out Processed  )
             (
-             iter_red4 C D /\ 
+             iter_red4 C C1 /\ iter_red5 C1 D Post Post1 Processed NewProcessed /\
              (
-                (red1 Vs D Pre Post Cs Subst /\ compose Vs S_In Subst NewSubst 
-                  /\ NewPre = nil /\ NewPost = Cs /\ Rule = 1
-                )
+                (  red1 Vs D Pre Post1 Cs Subst /\ compose Vs S_In Subst NewSubst /\ NewPre = nil /\ NewPost = Cs /\ Rule = 1  )
                 \/
-                (red I Vs D Post NewPost /\ NewSubst = S_In /\ NewPre = Pre /\ Rule = I) 
+                (  red I Vs D Post1 NewPost /\ NewSubst = S_In /\ NewPre = Pre /\ Rule = I) 
 		\/
-		(red5_aen_var D Pre Post Cs Subst /\ compose Vs S_In Subst NewSubst
-		  /\ NewPre = nil /\ NewPost = Cs /\ Rule = 5
-                )
+		(  red5_aen_var D Pre Post1 Cs Subst /\ compose Vs S_In Subst NewSubst /\ NewPre = nil /\ NewPost = Cs /\ Rule = 5  )
              ) /\
-             solve Vs NewSubst NewPre NewPost S_Out
+             solve Vs NewSubst NewPre NewPost S_Out  NewProcessed
             )
       ).
 
@@ -257,26 +300,5 @@ solve_constraints Vs Cs Subst :=
 %  println "Simplified input: ",
 %  print_list_cst Ds, println " ",
   id_subst Vs IdSubst /\
-  solve Vs IdSubst nil Ds Subst.
-
-Define print_cst : constraint -> prop
-by 
-print_cst (dedr S M) :=
-  printstr "(" /\ plist S /\ printstr " |-_R " /\ print_term M /\ printstr ")" ; 
-print_cst (dedl S M) :=
-  printstr "(" /\ plist S /\ printstr " |- " /\ print_term M /\ printstr ")".
- 
-Define plist_cst : list constraint -> prop
-by
-plist_cst nil ;
-plist_cst (cons X nil) := print_cst X ; 
-plist_cst (cons X (cons Y L)) :=
-  print_cst X /\
-  printstr " ; \n" /\
-  plist_cst (cons Y L).
-
-Define print_list_cst : list constraint -> prop
-by
-print_list_cst L :=
-  printstr"[" /\ plist_cst L /\ printstr "]".
+  solve Vs IdSubst nil Ds Subst nil.
 
