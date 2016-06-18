@@ -92,7 +92,7 @@ list_tm_to_tm (cons Tm nil) Tm;
 list_tm_to_tm (cons Tm1 Ls) (pr Tm1 Tm) := _not(Ls = nil) /\ list_tm_to_tm Ls Tm. 
 
 % III. Find hidden keys from ground term S and construct key encryption pair from ground term S and hidden keys (Lstau is now a ground term)
-Define inductive can_derive : list tm -> tm -> prop by
+Define can_derive : list tm -> tm -> prop by
 can_derive S K := _cut(solve_constraints nil (cons (dedl S K) nil) Subst).
 
 % 3.1 Find hidden key list from term S
@@ -283,7 +283,7 @@ key_ordering_compatibility_detection Ls KeyOrder :=
 
 
 % 5.3 Find key cycle
-Define inductive key_cycle_detection : list tm -> prop by
+Define key_cycle_detection : list tm -> prop by
 key_cycle_detection Ls := printstr "." /\
     list_tm_to_tm Ls Lstau /\
     get_hidden_key Ls Lstau HiddenKey /\ _not(HiddenKey = nil) /\
@@ -316,7 +316,7 @@ trace_list_tm (t_in A U T) Out := trace_list_tm T Out ;
 trace_list_tm (t_out A U T) (cons U Out) := trace_list_tm T Out. 
 
 % Detect key cycle with trace
-Define inductive detect_keycycle_trace : trace -> prop by
+Define detect_keycycle_trace : trace -> prop by
 detect_keycycle_trace (t_bind T) := nabla x,  detect_keycycle_trace (T x) ;
 detect_keycycle_trace T :=
     det_or (T = (t_in A M T')) (T = (t_out A M T')) /\
