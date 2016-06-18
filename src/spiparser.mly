@@ -94,9 +94,15 @@
   let mkquery a b = 
     let q = app (constid (pos 0) "bisim_def") [a;b] in 
     Spi.Query (pos 0, change_freeids q)
+
+  (* Add key cycle *)
+  let kcquery a =
+    let q = app (constid (pos 0) "keycycle_def" ) [a] in 
+    Spi.QueryKeyCycle (pos 0, change_freeids q)
+
 %}
 
-%token LPAREN RPAREN LBRAK RBRAK LANGLE RANGLE LBRAC RBRAC SEMICOLON BISIM
+%token LPAREN RPAREN LBRAK RBRAK LANGLE RANGLE LBRAC RBRAC SEMICOLON BISIM KEYCYCLE	/* Add key cycle */
 %token ZERO DOT EQ NEQ COMMA NU PAR PLUS ENC HASH AENC PUB BLIND SIGN VK MAC TAU CHECKSIGN ADEC UNBLIND GETMSG	/* Asymmetric encryption, Blind, Sign, Hash, Mac, CheckSign, Adec, Unblind, Getmsg */
 %token DEF CASE LET OF IN SHARP BANG
 %token <string> ID
@@ -120,6 +126,7 @@ input_def:
 input_query:
 | head DEF pexp SEMICOLON { mkdef $1 $3  }
 | BISIM LPAREN pexp COMMA pexp RPAREN SEMICOLON  { mkquery $3 $5 }
+| KEYCYCLE LPAREN pexp RPAREN SEMICOLON { kcquery $3 }			/* Add key cycle */
 | SHARP ID SEMICOLON { Spi.Command ($2, [])}
 | SHARP ID STRING SEMICOLON { Spi.Command ($2, [$3]) }
 | SHARP ID AID SEMICOLON { Spi.Command ($2, [$3] ) }
